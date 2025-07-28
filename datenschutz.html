@@ -3,23 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <title>Datenschutz – TipTipOnui</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <header class="navbar">
-    <div class="logo">
-      <a href="index.html"><img src="assets/logo.svg" alt="TipTipOnui logo" style="height: 40px;"></a>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="books.html">Books</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="support-me.html">Support Me</a></li>
-      </ul>
-    </nav>
-  </header>
+<header class="navbar">
+  <div class="logo">
+    <a href="index.html">
+      <img src="assets/logo.svg" alt="TipTipOnui logo" style="height: 40px;">
+    </a>
+  </div>
+
+  <!-- Hamburger Button (only visible on small screens) -->
+<button class="hamburger" id="hamburger-btn" aria-label="Menu">
+  <span></span>
+</button>
+
+  <!-- Navigation Links -->
+  <nav class="nav-links" id="nav-menu">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="books.html">Books</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="support-me.html">Support Me</a></li>
+    </ul>
+  </nav>
+</header>
+<script src="js/script.js" defer></script>
   <main class="featured">
     <h2>Datenschutzerklärung</h2>
     <p>Diese Website erhebt keine personenbezogenen Daten.</p>
