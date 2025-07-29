@@ -429,24 +429,33 @@ body {
 /* Eye of Sudoku Layout */
 .eye-sudoku-wrapper {
   display: flex;
-  height: auto;
-  padding: 2rem 0;
+  max-width: 1250px;           /* 💥 This centers the whole block */
+  margin: 0 auto;
+  flex-direction: row;         /* video left, text right */
+  justify-content: center;     /* center the whole block horizontally */
+  align-items: center;         /* align video and text vertically */
+  padding: 2rem;
+  gap: 2rem;                   /* spacing between video and text */
 }
 
 .eye-sudoku-left {
   flex: 1;
-  overflow: hidden;
+  max-width: 500px;
+  max-height: 100%;
+  height: auto;
+  display: block;
 }
 
 .eye-sudoku-right {
   flex: 1;
-  padding: 2rem 3rem;
+  padding: 1rem 1rem;
+  max-width: 750px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* Changed from center */
   gap: 1rem;
-  min-height: 600px;
+  align-self: flex-start;  /* forces text to align to top of video */
 }
 
 .eye-sudoku-right h1 {
