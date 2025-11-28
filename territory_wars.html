@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Territory Wars: Grid Conquest</title>
+    <style>
+        :root {
+            --p1-color: #1e32e5; /* Blue */
+            --p2-color: #e51e53; /* Red */
+            --bg-color: #ffffff;
+            --grid-color: #f0f0f0;
+            --ui-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #333;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #222; /* Dark outside the game area */
+            user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            cursor: default;
+        }
+
+        /* Cursor States */
+        .cursor-player {
+            cursor: crosshair !important;
+        }
+        
+        .cursor-ai {
+            cursor: not-allowed !important; /* Greyed out/blocked feel */
+        }
+
+        canvas {
+            display: block;
+        }
+
+        /* UI Overlay */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        #scoreboard {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ui-bg);
+            padding: 10px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 40px;
+            font-weight: 700;
+            font-size: 1rem;
+            pointer-events: auto;
+            border: 1px solid #eee;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .score-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-score {
+            font-size: 1.1rem;
+        }
+
+        .sub-score {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .dot-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 4px rgba(0,0,0,0.2);
+            margin-top: 4px; 
+        }
+
+        #turn-indicator {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ui-bg);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        /* Minimap */
+        #minimap-container {
+            position: absolute;
+            bottom: 25px;
+            left: 25px;
+            width: 220px;
+            height: 220px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            pointer-events: auto;
+        }
+
+        #minimap {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        #controls-hint {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            background: var(--ui-bg);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #555;
+            text-align: right;
+            pointer-events: none;
+            line-height: 1.5;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: none;
+            font-weight: bold;
+            color: #555;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="main-canvas"></canvas>
+    
+    <div id="ui-layer">
+        <div id="scoreboard">
+            <!-- Player 1 Score -->
+            <div class="score-item">
+                <div class="dot-indicator" style="background: var(--p1-color)"></div>
+                <div class="score-text">
+                    <div class="main-score" style="color: var(--p1-color)">
+                        Player: <span id="score-p1">0</span>
+                    </div>
+                    <div class="sub-score">
+                        Colonized: <span id="col-p1">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player 2 Score -->
+            <div class="score-item">
+                <div class="dot-indicator" style="background: var(--p2-color)"></div>
+                <div class="score-text">
+                    <div class="main-score" style="color: var(--p2-color)">
+                        AI: <span id="score-p2">0</span>
+                    </div>
+                    <div class="sub-score">
+                        Colonized: <span id="col-p2">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="turn-indicator">Player's Turn</div>
+
+        <div id="minimap-container">
+            <canvas id="minimap"></canvas>
+        </div>
+
+        <div id="controls-hint">
+            <strong>How to Play</strong><br>
+            Click intersection to place Dot<br>
+            Form triangles to claim area<br>
+            Surround territories to colonize<br>
+            10 Col. Points = +1 Bonus Move
+        </div>
+    </div>
+    <div id="loading" class="loading">AI Thinking...</div>
+</div>
+
+<script>
+/**
+ * Game Configuration and State
+ */
+const CONFIG = {
+    gridSize: 300,
+    cellSize: 30, // Visual pixels per grid unit
+    p1Color: '#1e32e5', // Blue
+    p2Color: '#e51e53', // Red
+    gridLineColor: '#e8e8e8',
+    dotRadius: 4,
+    lineWidth: 2.5,
+    p1Fill: 'rgba(30, 50, 229, 0.25)',
+    p2Fill: 'rgba(229, 30, 83, 0.25)',
+    bonusThreshold: 10 // Threshold for bonus moves
+};
+
+const STATE = {
+    turn: 1, // 1 = Human, 2 = AI
+    scores: { 1: 0, 2: 0 },
+    colonizedScores: { 1: 0, 2: 0 },
+    movesRemaining: 1,
+    
+    dots: new Map(), // Key: "x,y", Value: {x, y, owner, id, isPartOfTerritory}
+    adj: new Map(), // Key: dotId, Value: Set of connected dotIds
+    
+    // Key: "x1,y1_x2,y2" (sorted), Value: {from, to, owner, boundaryCount, isCovered}
+    lines: new Map(), 
+    
+    territories: [], // Array of {points: [{x,y}], owner, area, isColonized}
+    territorySignatures: new Set(), 
+    blockedPoints: new Set(), 
+    
+    // Global trackers for the current dot placement event
+    turnCapturedEnemies: new Set(),
+    turnUsedEdges: new Set(),
+
+    camera: { x: 130 * CONFIG.cellSize, y: 130 * CONFIG.cellSize }, 
+    isDragging: false,
+    dragStart: {x:0, y:0},
+    lastMouse: { x: 0, y: 0 }
+};
+
+// DOM Elements
+const container = document.getElementById('game-container');
+const canvas = document.getElementById('main-canvas');
+const ctx = canvas.getContext('2d', { alpha: false });
+const minimapCanvas = document.getElementById('minimap');
+const minimapCtx = minimapCanvas.getContext('2d');
+const uiTurn = document.getElementById('turn-indicator');
+const uiScore1 = document.getElementById('score-p1');
+const uiCol1 = document.getElementById('col-p1');
+const uiScore2 = document.getElementById('score-p2');
+const uiCol2 = document.getElementById('col-p2');
+const uiLoading = document.getElementById('loading');
+
+let width, height;
+
+/**
+ * Coordinate Utilities
+ */
+function getKey(x, y) {
+    return `${x},${y}`;
+}
+
+function getLineKey(p1, p2) {
+    if (p1.x < p2.x || (p1.x === p2.x && p1.y < p2.y)) {
+        return `${p1.x},${p1.y}_${p2.x},${p2.y}`;
+    } else {
+        return `${p2.x},${p2.y}_${p1.x},${p1.y}`;
+    }
+}
+
+function getGridPos(screenX, screenY) {
+    const worldX = screenX + STATE.camera.x;
+    const worldY = screenY + STATE.camera.y;
+    const gx = Math.round(worldX / CONFIG.cellSize);
+    const gy = Math.round(worldY / CONFIG.cellSize);
+    return { x: gx, y: gy };
+}
+
+/**
+ * Initialization
+ */
+function init() {
+    resize();
+    window.addEventListener('resize', resize);
+    
+    canvas.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    window.addEventListener('keydown', onKeyDown);
+
+    // Initial Bonus Calculation
+    calculateMoves(1);
+    
+    // Set Initial Cursor
+    updateCursorState();
+
+    requestAnimationFrame(loop);
+    updateMinimap();
+}
+
+function resize() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    minimapCanvas.width = 220;
+    minimapCanvas.height = 220;
+    render();
+}
+
+/**
+ * Game Logic
+ */
+
+function calculateMoves(player) {
+    // 1 base move + 1 for every 10 (test value) colonized points
+    const bonus = Math.floor(STATE.colonizedScores[player] / CONFIG.bonusThreshold);
+    STATE.movesRemaining = 1 + bonus;
+}
+
+function switchTurn() {
+    if (STATE.movesRemaining > 0) return;
+
+    STATE.turn = STATE.turn === 1 ? 2 : 1;
+    calculateMoves(STATE.turn);
+    
+    // Update Cursor CSS based on turn
+    updateCursorState();
+
+    uiTurn.textContent = STATE.turn === 1 ? "Player's Turn" : "AI's Turn";
+    uiTurn.style.color = STATE.turn === 1 ? CONFIG.p1Color : CONFIG.p2Color;
+
+    if (STATE.turn === 2) {
+        uiLoading.style.display = 'block';
+        setTimeout(playAITurn, 500); 
+    }
+}
+
+function updateCursorState() {
+    if (STATE.turn === 1) {
+        container.classList.add('cursor-player');
+        container.classList.remove('cursor-ai');
+    } else {
+        container.classList.add('cursor-ai');
+        container.classList.remove('cursor-player');
+    }
+}
+
+async function playAITurn() {
+    while (STATE.turn === 2 && STATE.movesRemaining > 0) {
+        aiMove();
+        recalculateLineVisibility();
+        render(); 
+        await new Promise(r => setTimeout(r, 600)); 
+    }
+    uiLoading.style.display = 'none';
+}
+
+function placeDot(gx, gy, player) {
+    if (gx < 0 || gy < 0 || gx >= CONFIG.gridSize || gy >= CONFIG.gridSize) return false;
+    
+    const key = getKey(gx, gy);
+    if (STATE.dots.has(key)) return false;
+    if (STATE.blockedPoints.has(key)) return false; 
+
+    // RESET MOVE TRACKERS for this single dot placement
+    STATE.turnCapturedEnemies.clear();
+    STATE.turnUsedEdges.clear();
+
+    const dot = { x: gx, y: gy, owner: player, id: key, isPartOfTerritory: false };
+    STATE.dots.set(key, dot);
+    if (!STATE.adj.has(key)) STATE.adj.set(key, new Set());
+
+    connectNeighbors(dot);
+
+    recalculateLineVisibility();
+
+    STATE.movesRemaining--;
+    if (STATE.movesRemaining <= 0) {
+        switchTurn();
+    }
+    
+    updateMinimap();
+    return true;
+}
+
+function connectNeighbors(dot) {
+    const directions = [
+        [0, -1], [1, -1], [1, 0], [1, 1], 
+        [0, 1], [-1, 1], [-1, 0], [-1, -1]
+    ];
+
+    const connectedNeighbors = [];
+
+    for (let d of directions) {
+        const nx = dot.x + d[0];
+        const ny = dot.y + d[1];
+        const nKey = getKey(nx, ny);
+        
+        if (STATE.dots.has(nKey)) {
+            const neighbor = STATE.dots.get(nKey);
+            if (neighbor.owner === dot.owner) {
+                if (!checkCrossing(dot, neighbor)) {
+                    // Create Line
+                    const lKey = getLineKey(dot, neighbor);
+                    
+                    if (!STATE.lines.has(lKey)) {
+                        STATE.lines.set(lKey, {
+                            from: {x: dot.x, y: dot.y},
+                            to: {x: nx, y: ny},
+                            owner: dot.owner,
+                            boundaryCount: 0,
+                            isCovered: false
+                        });
+                        
+                        STATE.adj.get(dot.id).add(neighbor.id);
+                        STATE.adj.get(neighbor.id).add(dot.id);
+                        connectedNeighbors.push(neighbor);
+                    }
+                }
+            }
+        }
+    }
+
+    // Check cycles
+    for (let neighbor of connectedNeighbors) {
+        detectCycle(dot, neighbor);
+    }
+}
+
+function checkCrossing(d1, d2) {
+    if (Math.abs(d1.x - d2.x) === 1 && Math.abs(d1.y - d2.y) === 1) {
+        const crossKey1 = getKey(d1.x, d2.y);
+        const crossKey2 = getKey(d2.x, d1.y);
+        
+        if (STATE.dots.has(crossKey1) && STATE.dots.has(crossKey2)) {
+            const adj1 = STATE.adj.get(crossKey1);
+            if (adj1 && adj1.has(crossKey2)) {
+                return true; 
+            }
+        }
+    }
+    return false;
+}
+
+// --- Calculate Area for accurate sorting ---
+function getPolygonArea(points) {
+    let area = 0;
+    for (let i = 0; i < points.length; i++) {
+        const j = (i + 1) % points.length;
+        area += points[i].x * points[j].y;
+        area -= points[j].x * points[i].y;
+    }
+    return Math.abs(area) / 2;
+}
+
+function detectCycle(startDot, endDot) {
+    const queue = [{ dot: endDot, parent: null, len: 1 }];
+    const foundPaths = [];
+    const MAX_DEPTH = 500; 
+    let iterations = 0;
+    const MAX_ITERATIONS = 50000;
+
+    while(queue.length > 0) {
+        iterations++;
+        if(iterations > MAX_ITERATIONS) break;
+
+        const node = queue.shift();
+        const currDot = node.dot;
+        
+        if (currDot.id === startDot.id) {
+            if (node.len > 2) { 
+                 const path = [];
+                 let temp = node;
+                 while(temp) {
+                     path.push(temp.dot);
+                     temp = temp.parent;
+                 }
+                 foundPaths.push(path);
+                 continue; 
+            }
+        }
+
+        if (node.len > MAX_DEPTH) continue;
+
+        const neighbors = STATE.adj.get(currDot.id);
+        if(!neighbors) continue;
+
+        for (let nextId of neighbors) {
+            if (currDot.id === endDot.id && nextId === startDot.id) continue;
+            
+            let isVisited = false;
+            let temp = node;
+            while(temp) {
+                if (temp.dot.id === nextId) {
+                    if (nextId !== startDot.id) isVisited = true;
+                    break;
+                }
+                temp = temp.parent;
+            }
+            
+            if (!isVisited) {
+                const nextDot = STATE.dots.get(nextId);
+                queue.push({ dot: nextDot, parent: node, len: node.len + 1 });
+            }
+        }
+    }
+
+    if (foundPaths.length > 0) {
+        // Calculate Areas
+        const pathMeta = foundPaths.map(path => ({
+            path: path,
+            area: getPolygonArea(path)
+        }));
+
+        // Sort by AREA (Smallest first)
+        pathMeta.sort((a, b) => a.area - b.area);
+
+        for (const pm of pathMeta) {
+            const path = pm.path;
+            let isColonizer = false;
+            let capturedIndices = [];
+
+            // Identify Captured Enemies
+            for (let i = 0; i < STATE.territories.length; i++) {
+                const t = STATE.territories[i];
+                if (t.owner !== startDot.owner && !t.isColonized && t.points.length > 0) {
+                    if (isPointInPolygon(t.points[0], path)) {
+                        capturedIndices.push(i);
+                    }
+                }
+            }
+
+            let shouldProcess = false;
+            
+            // 1. Is it a COLONIZER?
+            if (capturedIndices.length > 0) {
+                isColonizer = true;
+                const indices = capturedIndices.map(t => STATE.territories.indexOf(t)).sort().join(',');
+                
+                // Only process if we haven't captured this exact set yet
+                if (!STATE.turnCapturedEnemies.has(indices)) {
+                    shouldProcess = true;
+                    STATE.turnCapturedEnemies.add(indices);
+                }
+            } 
+            // 2. Is it a valid new territory (Disjoint)?
+            else {
+                // Check overlap with used EDGES from this turn
+                let overlapCount = 0;
+                for(let i=0; i<path.length; i++) {
+                    const p1 = path[i];
+                    const p2 = path[(i+1)%path.length];
+                    const key = getLineKey(p1, p2);
+                    if (STATE.turnUsedEdges.has(key)) overlapCount++;
+                }
+
+                // Strict Filter: If this new loop shares >1 edge with any loop created 
+                // in this same click, it is redundant/ghost.
+                if (overlapCount <= 1) {
+                    shouldProcess = true;
+                }
+            }
+
+            if (shouldProcess) {
+                // Mark edges as used
+                for(let i=0; i<path.length; i++) {
+                    const p1 = path[i];
+                    const p2 = path[(i+1)%path.length];
+                    const key = getLineKey(p1, p2);
+                    STATE.turnUsedEdges.add(key);
+                }
+
+                processTerritory(path, startDot.owner);
+            }
+        }
+    }
+}
+
+function distancePointToSegment(px, py, x1, y1, x2, y2) {
+    const A = px - x1;
+    const B = py - y1;
+    const C = x2 - x1;
+    const D = y2 - y1;
+    const dot = A * C + B * D;
+    const lenSq = C * C + D * D;
+    let param = -1;
+    if (lenSq !== 0) param = dot / lenSq;
+    let xx, yy;
+    if (param < 0) { xx = x1; yy = y1; }
+    else if (param > 1) { xx = x2; yy = y2; }
+    else { xx = x1 + param * C; yy = y1 + param * D; }
+    const dx = px - xx;
+    const dy = py - yy;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+function processTerritory(pathDots, owner) {
+    const signature = pathDots.map(p => p.id).sort().join('|');
+    if (STATE.territorySignatures.has(signature)) return false; 
+    STATE.territorySignatures.add(signature);
+
+    // Calculations
+    let area = 0;
+    for (let i = 0; i < pathDots.length; i++) {
+        const j = (i + 1) % pathDots.length;
+        area += pathDots[i].x * pathDots[j].y;
+        area -= pathDots[j].x * pathDots[i].y;
+    }
+    area = Math.abs(area) / 2;
+
+    // B. Check for COLONIZATION
+    STATE.territories.forEach(t => {
+        if (t.owner !== owner && !t.isColonized) {
+            if (t.points.length > 0) {
+                const testPoint = t.points[0];
+                if (isPointInPolygon(testPoint, pathDots)) {
+                    t.isColonized = true;
+                    STATE.scores[t.owner] -= t.area;
+                    STATE.colonizedScores[owner] += t.area;
+                }
+            }
+        }
+    });
+
+    STATE.territories.push({
+        points: pathDots,
+        owner: owner,
+        area: area,
+        isColonized: false
+    });
+
+    STATE.scores[owner] += area;
+    uiScore1.innerText = STATE.scores[1];
+    uiScore2.innerText = STATE.scores[2];
+    uiCol1.innerText = STATE.colonizedScores[1];
+    uiCol2.innerText = STATE.colonizedScores[2];
+    
+    return true;
+}
+
+function recalculateLineVisibility() {
+    // 1. Reset
+    for (const line of STATE.lines.values()) {
+        line.boundaryCount = 0;
+        line.isCovered = false;
+    }
+    STATE.blockedPoints.clear();
+
+    // 2. Topology (Boundary Count) & Blocked Points
+    for (const t of STATE.territories) {
+        // Block interior
+        let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+        t.points.forEach(p => {
+             if(p.x<minX) minX=p.x; if(p.x>maxX) maxX=p.x;
+             if(p.y<minY) minY=p.y; if(p.y>maxY) maxY=p.y;
+        });
+        
+        for (let y = minY; y <= maxY; y++) {
+            for (let x = minX; x <= maxX; x++) {
+                if (isPointInPolygon({x, y}, t.points)) {
+                    STATE.blockedPoints.add(getKey(x, y));
+                }
+            }
+        }
+
+        // Count boundaries
+        for (let i = 0; i < t.points.length; i++) {
+            const j = (i + 1) % t.points.length;
+            const lKey = getLineKey(t.points[i], t.points[j]);
+            const line = STATE.lines.get(lKey);
+            if (line) {
+                line.boundaryCount++;
+            }
+        }
+    }
+
+    // 3. Geometry (Covered Lines)
+    for (const [key, line] of STATE.lines.entries()) {
+        if (line.boundaryCount > 0) continue;
+
+        const midX = (line.from.x + line.to.x) / 2;
+        const midY = (line.from.y + line.to.y) / 2;
+
+        for (const t of STATE.territories) {
+            // Optimization: Hide only if covered by SAME OWNER
+            if (t.owner !== line.owner) continue;
+
+            let isEdge = false;
+             for(let i=0; i<t.points.length; i++) {
+                const j = (i+1)%t.points.length;
+                const lKey = getLineKey(t.points[i], t.points[j]);
+                if(lKey === key) { isEdge = true; break; }
+            }
+            if(isEdge) continue; 
+
+            let minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+            t.points.forEach(p => {
+                if(p.x < minX) minX = p.x;
+                if(p.x > maxX) maxX = p.x;
+                if(p.y < minY) minY = p.y;
+                if(p.y > maxY) maxY = p.y;
+            });
+
+            if (midX <= minX || midX >= maxX || midY <= minY || midY >= maxY) continue;
+
+            if (isPointInPolygon({x: midX, y: midY}, t.points)) {
+                let onBoundary = false;
+                for(let i=0; i<t.points.length; i++) {
+                    const j = (i+1)%t.points.length;
+                    const dist = distancePointToSegment(midX, midY, t.points[i].x, t.points[i].y, t.points[j].x, t.points[j].y);
+                    if (dist < 1.0) { // Increased safety to 1.0px
+                        onBoundary = true;
+                        break;
+                    }
+                }
+
+                if (!onBoundary) {
+                    line.isCovered = true;
+                    break; 
+                }
+            }
+        }
+    }
+    
+    // 4. Reset dots
+    STATE.dots.forEach(dot => {
+        dot.isPartOfTerritory = false; 
+    });
+    
+    STATE.territories.forEach(t => {
+       t.points.forEach(p => {
+           const dot = STATE.dots.get(p.id);
+           if(dot) dot.isPartOfTerritory = true;
+       });
+    });
+    // Check internal dots
+    STATE.dots.forEach(dot => {
+        if(!dot.isPartOfTerritory) {
+             if(STATE.blockedPoints.has(dot.id)) {
+                 dot.isPartOfTerritory = true;
+             }
+        }
+    });
+}
+
+function isPointInPolygon(p, polygon) {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i].x, yi = polygon[i].y;
+        const xj = polygon[j].x, yj = polygon[j].y;
+        const intersect = ((yi > p.y) !== (yj > p.y)) && (p.x < (xj - xi) * (p.y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+}
+
+/**
+ * AI Logic
+ */
+function aiMove() {
+    const candidates = new Set();
+    const range = 2;
+
+    STATE.dots.forEach(dot => {
+        for(let dy = -range; dy <= range; dy++){
+            for(let dx = -range; dx <= range; dx++){
+                if(dx===0 && dy===0) continue;
+                const tx = dot.x + dx;
+                const ty = dot.y + dy;
+                if(tx >= 0 && tx < CONFIG.gridSize && ty >= 0 && ty < CONFIG.gridSize) {
+                     const k = getKey(tx, ty);
+                     if(!STATE.dots.has(k) && !STATE.blockedPoints.has(k)) {
+                         candidates.add(k);
+                     }
+                }
+            }
+        }
+    });
+
+    if (candidates.size === 0) {
+        const rx = Math.floor(CONFIG.gridSize/2 + (Math.random()*10 - 5));
+        const ry = Math.floor(CONFIG.gridSize/2 + (Math.random()*10 - 5));
+        candidates.add(getKey(rx, ry));
+    }
+
+    let bestMove = null;
+    let maxScore = -Infinity;
+    const candidateArray = Array.from(candidates);
+    const subset = candidateArray.sort(() => 0.5 - Math.random()).slice(0, 50);
+
+    for (let key of subset) {
+        const [sx, sy] = key.split(',').map(Number);
+        let score = 0;
+        let myNeighbors = 0;
+        let enemyNeighbors = 0;
+        
+        const directions = [[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]];
+        for(let d of directions){
+            const k = getKey(sx+d[0], sy+d[1]);
+            if(STATE.dots.has(k)){
+                const dObj = STATE.dots.get(k);
+                if(dObj.owner === 2) myNeighbors++;
+                else enemyNeighbors++;
+            }
+        }
+
+        score += myNeighbors * 10;
+        score += enemyNeighbors * 5;
+
+        if(myNeighbors >= 2) {
+             let triangleFound = false;
+             const myNs = [];
+             for(let d of directions){
+                const k = getKey(sx+d[0], sy+d[1]);
+                if(STATE.dots.has(k) && STATE.dots.get(k).owner === 2) myNs.push(STATE.dots.get(k));
+             }
+             for(let i=0; i<myNs.length; i++){
+                 for(let j=i+1; j<myNs.length; j++){
+                     if(STATE.adj.get(myNs[i].id).has(myNs[j].id)) {
+                         triangleFound = true;
+                         break;
+                     }
+                 }
+             }
+             if(triangleFound) score += 50; 
+        }
+
+        score += Math.random() * 10;
+
+        if(score > maxScore) {
+            maxScore = score;
+            bestMove = {x: sx, y: sy};
+        }
+    }
+
+    if (bestMove) {
+        const success = placeDot(bestMove.x, bestMove.y, 2);
+        if (!success) {
+             STATE.movesRemaining--;
+        }
+    } else {
+        STATE.movesRemaining = 0; 
+    }
+}
+
+/**
+ * Rendering
+ */
+function loop() {
+    render();
+    requestAnimationFrame(loop);
+}
+
+function render() {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+
+    const offsetX = -(STATE.camera.x % CONFIG.cellSize);
+    const offsetY = -(STATE.camera.y % CONFIG.cellSize);
+    const startCol = Math.floor(STATE.camera.x / CONFIG.cellSize);
+    const startRow = Math.floor(STATE.camera.y / CONFIG.cellSize);
+    const endCol = startCol + (width / CONFIG.cellSize) + 1;
+    const endRow = startRow + (height / CONFIG.cellSize) + 1;
+
+    // Grid
+    ctx.strokeStyle = CONFIG.gridLineColor;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let c = 0; c <= (endCol - startCol); c++) {
+        const x = offsetX + (c * CONFIG.cellSize);
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+    }
+    for (let r = 0; r <= (endRow - startRow); r++) {
+        const y = offsetY + (r * CONFIG.cellSize);
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+    }
+    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(-STATE.camera.x, -STATE.camera.y);
+
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    // Batch Render Territories
+    ctx.fillStyle = CONFIG.p1Fill;
+    ctx.beginPath();
+    STATE.territories.forEach(t => {
+        if(t.owner === 1 && t.points.length > 0) {
+            const p0 = t.points[0];
+            ctx.moveTo(p0.x * CONFIG.cellSize, p0.y * CONFIG.cellSize);
+            for(let i=1; i<t.points.length; i++){
+                ctx.lineTo(t.points[i].x * CONFIG.cellSize, t.points[i].y * CONFIG.cellSize);
+            }
+            ctx.closePath();
+        }
+    });
+    ctx.fill();
+
+    ctx.fillStyle = CONFIG.p2Fill;
+    ctx.beginPath();
+    STATE.territories.forEach(t => {
+        if(t.owner === 2 && t.points.length > 0) {
+            const p0 = t.points[0];
+            ctx.moveTo(p0.x * CONFIG.cellSize, p0.y * CONFIG.cellSize);
+            for(let i=1; i<t.points.length; i++){
+                ctx.lineTo(t.points[i].x * CONFIG.cellSize, t.points[i].y * CONFIG.cellSize);
+            }
+            ctx.closePath();
+        }
+    });
+    ctx.fill();
+
+    // Draw Lines
+    ctx.lineWidth = CONFIG.lineWidth;
+    
+    for (const l of STATE.lines.values()) {
+        if (l.boundaryCount >= 2 || l.isCovered) continue; 
+
+        const lx = l.from.x * CONFIG.cellSize;
+        const ly = l.from.y * CONFIG.cellSize;
+        
+        if (lx < STATE.camera.x - 200 || lx > STATE.camera.x + width + 200) continue;
+        if (ly < STATE.camera.y - 200 || ly > STATE.camera.y + height + 200) continue;
+
+        ctx.strokeStyle = l.owner === 1 ? CONFIG.p1Color : CONFIG.p2Color;
+        ctx.beginPath();
+        ctx.moveTo(lx, ly);
+        ctx.lineTo(l.to.x * CONFIG.cellSize, l.to.y * CONFIG.cellSize);
+        ctx.stroke();
+    }
+
+    // Draw Dots
+    for (const dot of STATE.dots.values()) {
+        if (dot.isPartOfTerritory) continue;
+
+        const dx = dot.x * CONFIG.cellSize;
+        const dy = dot.y * CONFIG.cellSize;
+        
+        if(dx < STATE.camera.x - 20 || dx > STATE.camera.x + width + 20) continue;
+        if(dy < STATE.camera.y - 20 || dy > STATE.camera.y + height + 20) continue;
+
+        ctx.fillStyle = dot.owner === 1 ? CONFIG.p1Color : CONFIG.p2Color;
+        ctx.beginPath();
+        ctx.arc(dx, dy, CONFIG.dotRadius, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    ctx.restore();
+
+    // --- CURSOR HIGHLIGHTS ---
+    if (STATE.lastMouse.x !== 0 && STATE.lastMouse.y !== 0) {
+        
+        if (STATE.turn === 1) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(STATE.lastMouse.x, STATE.lastMouse.y, 8, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(30, 50, 229, 0.4)'; 
+            ctx.fill();
+            ctx.strokeStyle = CONFIG.p1Color;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            
+            const pos = getGridPos(STATE.lastMouse.x, STATE.lastMouse.y);
+            const snapScreenX = (pos.x * CONFIG.cellSize) - STATE.camera.x;
+            const snapScreenY = (pos.y * CONFIG.cellSize) - STATE.camera.y;
+            
+            ctx.beginPath();
+            ctx.arc(snapScreenX, snapScreenY, 3, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(30, 50, 229, 0.6)';
+            ctx.fill();
+            ctx.restore();
+        }
+
+        if (STATE.turn === 1 && STATE.movesRemaining > 1) {
+            ctx.save();
+            ctx.font = 'bold 20px Arial';
+            ctx.fillStyle = '#2ecc71'; 
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 4;
+            ctx.fillText(`+${STATE.movesRemaining - 1}`, STATE.lastMouse.x + 15, STATE.lastMouse.y - 15);
+            ctx.restore();
+        }
+    }
+}
+
+// Added updateMinimap function
+function updateMinimap() {
+    const mWidth = minimapCanvas.width;
+    const mHeight = minimapCanvas.height;
+    const scale = mWidth / CONFIG.gridSize;
+
+    minimapCtx.clearRect(0, 0, mWidth, mHeight);
+
+    // Draw Territories Batch
+    minimapCtx.fillStyle = CONFIG.p1Color;
+    minimapCtx.beginPath();
+    STATE.territories.forEach(t => {
+        if(t.owner === 1 && t.points.length > 0) {
+            minimapCtx.moveTo(t.points[0].x * scale, t.points[0].y * scale);
+            for(let i=1; i<t.points.length; i++) minimapCtx.lineTo(t.points[i].x * scale, t.points[i].y * scale);
+            minimapCtx.closePath();
+        }
+    });
+    minimapCtx.fill();
+
+    minimapCtx.fillStyle = CONFIG.p2Color;
+    minimapCtx.beginPath();
+    STATE.territories.forEach(t => {
+        if(t.owner === 2 && t.points.length > 0) {
+            minimapCtx.moveTo(t.points[0].x * scale, t.points[0].y * scale);
+            for(let i=1; i<t.points.length; i++) minimapCtx.lineTo(t.points[i].x * scale, t.points[i].y * scale);
+            minimapCtx.closePath();
+        }
+    });
+    minimapCtx.fill();
+
+    // Viewport
+    const vx = STATE.camera.x / CONFIG.cellSize * scale;
+    const vy = STATE.camera.y / CONFIG.cellSize * scale;
+    const vw = (width / CONFIG.cellSize) * scale;
+    const vh = (height / CONFIG.cellSize) * scale;
+
+    minimapCtx.strokeStyle = "#333";
+    minimapCtx.lineWidth = 1;
+    minimapCtx.strokeRect(vx, vy, vw, vh);
+}
+
+/**
+ * Input
+ */
+function onMouseDown(e) {
+    if (e.button === 0) {
+        STATE.isDragging = false;
+        STATE.dragStart = { x: e.clientX, y: e.clientY };
+    }
+}
+
+function onMouseMove(e) {
+    STATE.lastMouse = { x: e.clientX, y: e.clientY };
+
+    if (e.buttons === 1) {
+        const dx = e.clientX - STATE.dragStart.x;
+        const dy = e.clientY - STATE.dragStart.y;
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) STATE.isDragging = true;
+
+        if (STATE.isDragging) {
+            STATE.camera.x -= e.movementX;
+            STATE.camera.y -= e.movementY;
+            STATE.camera.x = Math.max(0, Math.min(STATE.camera.x, (CONFIG.gridSize * CONFIG.cellSize) - width));
+            STATE.camera.y = Math.max(0, Math.min(STATE.camera.y, (CONFIG.gridSize * CONFIG.cellSize) - height));
+            updateMinimap();
+        }
+    }
+}
+
+function onMouseUp(e) {
+    if (!STATE.isDragging && e.button === 0) {
+        if (STATE.turn === 1) {
+            const pos = getGridPos(e.clientX, e.clientY);
+            const success = placeDot(pos.x, pos.y, 1);
+        }
+    }
+    STATE.isDragging = false;
+}
+
+function onKeyDown(e) {
+    const step = 50;
+    switch(e.key) {
+        case "ArrowLeft": STATE.camera.x -= step; break;
+        case "ArrowRight": STATE.camera.x += step; break;
+        case "ArrowUp": STATE.camera.y -= step; break;
+        case "ArrowDown": STATE.camera.y += step; break;
+    }
+    updateMinimap();
+}
+
+init();
+
+</script>
+</body>
+</html>
