@@ -1,28 +1,63 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <title>About – TipTipOnui</title>
+
+  <!-- ── Primary SEO ─────────────────────────────────────────── -->
+  <title>About TipTipOnui – Puzzle Books & Children's Books from Berlin</title>
+  <meta name="description" content="TipTipOnui is a Berlin-based creative studio designing unique puzzle books and children's books for Amazon KDP — Sudoku variations, word searches, logic games, and story-driven adventures.">
+  <link rel="canonical" href="https://www.tiptiponui.com/about.html">
+
+  <!-- ── Open Graph ─────────────────────────────────────────── -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="About TipTipOnui – Puzzle Books & Children's Books from Berlin">
+  <meta property="og:description" content="A Berlin-based creative studio designing unique puzzle books and children's books on Amazon KDP — Sudoku, word searches, logic games, and story-driven adventures for all ages.">
+  <meta property="og:url" content="https://www.tiptiponui.com/about.html">
+  <meta property="og:image" content="https://www.tiptiponui.com/assets/og-image.jpg">
+
+  <!-- ── Twitter / X card ───────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="About TipTipOnui – Puzzle Books from Berlin">
+  <meta name="twitter:description" content="Berlin-based studio designing unique puzzle books and children's books on Amazon KDP.">
+  <meta name="twitter:image" content="https://www.tiptiponui.com/assets/og-image.jpg">
+
+  <!-- ── Structured Data: Organization (JSON-LD) ────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "TipTipOnui",
+    "url": "https://www.tiptiponui.com/",
+    "logo": "https://www.tiptiponui.com/assets/logo.svg",
+    "description": "Berlin-based creative studio designing unique puzzle books, Sudoku variations, word searches, and children's story books — all published on Amazon KDP.",
+    "foundingLocation": {
+      "@type": "Place",
+      "name": "Berlin, Germany"
+    },
+    "sameAs": [
+      "https://www.amazon.com/stores/TipTipOnui"
+    ]
+  }
+  </script>
+
+  <!-- ── Favicon & Stylesheet ───────────────────────────────── -->
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/style.css">
 </head>
+
 <body>
- <header class="navbar">
+
+<header class="navbar">
   <div class="logo">
     <a href="index.html">
       <img src="assets/logo.svg" alt="TipTipOnui logo" style="height: 40px;">
     </a>
   </div>
-
-  <!-- Hamburger Button (only visible on small screens) -->
-<button class="hamburger" id="hamburger-btn" aria-label="Menu">
-  <span></span>
-</button>
-
-  <!-- Navigation Links -->
-  <nav class="nav-links" id="nav-menu">
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+    <span></span>
+  </button>
+  <nav class="nav-links" id="nav-menu" aria-label="Main navigation">
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="books.html">Books</a></li>
@@ -31,22 +66,82 @@
     </ul>
   </nav>
 </header>
+
 <script src="js/script.js" defer></script>
-<div class="video-hero">
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="assets/pyramid-setting.mp4" type="video/mp4">
-    Your browser does not support HTML5 video.
-  </video>
-  <div class="about-text">
-  <div class="about-text-inner">
-    <h1>About TipTipOnui</h1>
-    <p>TipTipOnui is a creative corner dedicated to puzzle lovers, bookworms, and curious minds. We design unique logic puzzles, Sudoku variations, and story-driven experiences that engage and inspire. Whether you're looking for relaxing word searches or mysterious 3D cube puzzles, we've got something for you.</p>
-<p>All our books are available through Amazon. We don’t sell anything directly — we just make the fun stuff.</p>
+
+<main>
+
+  <div class="video-hero">
+    <video autoplay muted loop playsinline id="bg-video">
+      <source src="assets/pyramid-setting.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+    <div class="about-text">
+      <div class="about-text-inner">
+        <h1>About TipTipOnui</h1>
+        <p>TipTipOnui is a creative corner dedicated to puzzle lovers, bookworms, and curious minds. We design unique logic puzzles, Sudoku variations, and story-driven experiences that engage and inspire. Whether you're looking for relaxing word searches or mysterious 3D cube puzzles, we've got something for you.</p>
+        <p>All our books are available through Amazon. We don't sell anything directly — we just make the fun stuff.</p>
+      </div>
+    </div>
   </div>
-  </div>
-</div>
-  <footer class="footer">
-    <p>Designed in Berlin, 2025 · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></p>
-  </footer>
+
+  <!-- ── About content section ──────────────────────────────── -->
+  <section class="about-content" aria-labelledby="about-content-heading">
+    <div class="about-content-inner">
+
+      <div class="about-block">
+        <h2 id="about-content-heading">What we make</h2>
+        <p>Every TipTipOnui book starts with a simple question: what would make this genuinely fun to hold, open, and use? We work across three categories — puzzles, literature, and resources — each designed with the same attention to craft and a healthy disregard for the boring.</p>
+        <p>Our puzzle books range from approachable 6×6 Sudoku for young beginners to the bizarre geometry of the Eye of Sudoku, a 3D cube puzzle unlike anything else on Amazon. Our children's books lean into character and warmth. Our resource books are practical without being dull.</p>
+      </div>
+
+      <div class="about-categories">
+        <div class="about-cat">
+          <h3>Puzzles</h3>
+          <p>Sudoku variations, word searches, and logic challenges for all ages and skill levels — from kids building focus to adults who want something that actually makes them think.</p>
+        </div>
+        <div class="about-cat">
+          <h3>Literature</h3>
+          <p>Picture books, bedtime stories, and early chapter books designed to spark imagination, grow vocabulary, and be the kind of book a child asks for again.</p>
+        </div>
+        <div class="about-cat">
+          <h3>Resources</h3>
+          <p>Educational notebooks, language learning guides, and practical self-care books that cover real topics — clearly, without filler.</p>
+        </div>
+      </div>
+
+      <div class="about-block">
+        <h2>Where we're from</h2>
+        <p>TipTipOnui is designed in Berlin. All titles are self-published through Amazon KDP and available worldwide in paperback, hardcover, and eBook formats. We don't run a shop, take orders, or sell anything directly — everything goes through Amazon so you get fast delivery and easy returns.</p>
+        <p>If you're a self-publisher yourself and want your book to look as considered as ours, take a look at <a href="https://www.dtp-services.de" target="_blank" rel="noopener">dtp-services.de</a> — a Berlin-based formatting studio specialising in professional KDP book layouts.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── DTP Services Promo Banner ──────────────────────────── -->
+  <section class="dtp-banner" aria-label="Sponsored: Professional KDP book formatting">
+    <div class="dtp-banner-inner">
+      <div class="dtp-label">For KDP authors</div>
+      <h2 class="dtp-headline">Your book.<br><span>Perfectly laid out.</span></h2>
+      <p class="dtp-body">
+        Professional book formatting for Amazon KDP —<br>
+        interiors, covers, print-ready files.<br>
+        Made for self-publishers who want their work<br>
+        to look like it came from a real publisher.
+      </p>
+      <a class="dtp-cta" href="https://www.dtp-services.de" target="_blank" rel="noopener sponsored">
+        Book your layout → dtp-services.de
+      </a>
+      <p class="dtp-sub">Berlin-based · fast turnaround · print &amp; ebook</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Designed in Berlin, 2025 · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></p>
+</footer>
+
 </body>
 </html>
