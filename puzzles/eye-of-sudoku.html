@@ -1,77 +1,446 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-  <title>The Eye of Sudoku – TipTipOnui</title>
-  <link rel="stylesheet" href="../assets/style.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ── Primary SEO ─────────────────────────────────────────── -->
+  <title>The Eye of Sudoku – 3D Cube Puzzle Book | TipTipOnui</title>
+  <meta name="description" content="The Eye of Sudoku is a one-of-a-kind 3D Sudoku puzzle book — 33 interconnected cube puzzles, a mysterious narrative, and a secret signal hidden in the pages. Available on Amazon.">
+  <link rel="canonical" href="https://www.tiptiponui.com/puzzles/eye-of-sudoku.html">
+
+  <!-- ── Open Graph ─────────────────────────────────────────── -->
+  <meta property="og:type" content="book">
+  <meta property="og:title" content="The Eye of Sudoku – 3D Cube Puzzle Book">
+  <meta property="og:description" content="33 interconnected 3D Sudoku cube puzzles, a mysterious narrative, and a secret signal hidden in the pages. Unlike any puzzle book you've seen.">
+  <meta property="og:url" content="https://www.tiptiponui.com/puzzles/eye-of-sudoku.html">
+  <meta property="og:image" content="https://images-na.ssl-images-amazon.com/images/P/B0FJMHV1MC.01._SCLZZZZZZZ_.jpg">
+
+  <!-- ── Twitter / X card ───────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Eye of Sudoku – 3D Cube Puzzle Book">
+  <meta name="twitter:description" content="33 interconnected 3D Sudoku cube puzzles with a mysterious narrative and a secret signal. Available on Amazon.">
+  <meta name="twitter:image" content="https://images-na.ssl-images-amazon.com/images/P/B0FJMHV1MC.01._SCLZZZZZZZ_.jpg">
+
+  <!-- ── Structured Data: Book (JSON-LD) ────────────────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    "name": "The Eye of Sudoku",
+    "alternateName": "Sudokaji – The Eye of Sudoku 3D Puzzles",
+    "url": "https://www.amazon.com/dp/B0FJMHV1MC",
+    "image": "https://images-na.ssl-images-amazon.com/images/P/B0FJMHV1MC.01._SCLZZZZZZZ_.jpg",
+    "author": { "@type": "Organization", "name": "TipTipOnui" },
+    "publisher": { "@type": "Organization", "name": "TipTipOnui" },
+    "bookFormat": "https://schema.org/Paperback",
+    "inLanguage": "en",
+    "genre": ["Puzzle Books", "Logic Games", "Mystery"],
+    "description": "A one-of-a-kind 3D Sudoku puzzle book featuring 33 interconnected cube puzzles, a mysterious narrative woven through the pages, and a secret code to transmit a signal at eyeofsudoku.com.",
+    "numberOfPages": null,
+    "offers": {
+      "@type": "Offer",
+      "url": "https://www.amazon.com/dp/B0FJMHV1MC",
+      "availability": "https://schema.org/InStock",
+      "seller": { "@type": "Organization", "name": "Amazon KDP" }
+    }
+  }
+  </script>
+
+  <!-- ── Favicon & Global Stylesheet ───────────────────────── -->
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/style.css">
+
+  <!-- ── Page-specific styles ───────────────────────────────── -->
+  <style>
+    /* ── Starfield canvas sits behind everything ── */
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Pyramid SVG fixed at bottom-right ── */
+    .pyramid-silhouette {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: min(520px, 55vw);
+      z-index: 1;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* ── Full-page dark background ── */
+    body.eye-page {
+      background: #000;
+      color: #e8e4dc;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* ── Navbar: make it transparent over dark bg ── */
+    body.eye-page .navbar {
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+      z-index: 100;
+    }
+
+    body.eye-page .navbar a,
+    body.eye-page .navbar .nav-links a {
+      color: #ccc;
+    }
+
+    body.eye-page .navbar .nav-links a:hover {
+      color: #fff;
+    }
+
+    body.eye-page .hamburger span,
+    body.eye-page .hamburger span::before,
+    body.eye-page .hamburger span::after {
+      background: #ccc;
+    }
+
+    /* ── Main layout ── */
+    .eye-sudoku-wrapper {
+      display: flex;
+      max-width: 1250px;
+      margin: 0 auto;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 2rem 6rem;
+      gap: 2rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .eye-sudoku-left {
+      flex: 1;
+      max-width: 500px;
+      height: auto;
+      display: block;
+    }
+
+    .eye-sudoku-right {
+      flex: 1;
+      padding: 1rem;
+      max-width: 750px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 1rem;
+      align-self: flex-start;
+    }
+
+    .eye-sudoku-right h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    .eye-sudoku-right .intro-text {
+      font-size: 1.15rem;
+      color: #a8a4b8;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+    }
+
+    .eye-sudoku-right .desc-text {
+      font-size: 1rem;
+      color: #ccc;
+      margin-bottom: 0.5rem;
+      line-height: 1.7;
+    }
+
+    .eye-bullets {
+      margin-top: 0.3rem;
+      padding-left: 1.2rem;
+      color: #bbb;
+      line-height: 1.8;
+    }
+
+    .eye-bullets li {
+      margin-bottom: 0.3rem;
+    }
+
+    /* ── Book card: dark glassmorphism ── */
+    .eye-book-horizontal {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      max-width: 600px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .eye-book-horizontal .book-image img {
+      max-width: 140px;
+      height: auto;
+      border-radius: 6px;
+      object-fit: contain;
+      aspect-ratio: 1 / 1;
+      background: transparent;
+    }
+
+    .eye-book-horizontal .book-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .eye-book-horizontal .book-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .eye-book-horizontal .book-text h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+
+    .eye-book-horizontal .book-text p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #999;
+    }
+
+    .eye-book-horizontal .book-button a {
+      display: inline-block;
+      padding: 0.55rem 1.2rem;
+      background: rgba(80, 130, 255, 0.85);
+      color: #fff;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .eye-book-horizontal .book-button a:hover {
+      background: rgba(100, 150, 255, 1);
+    }
+
+    /* ── Footer ── */
+    body.eye-page .footer {
+      position: relative;
+      z-index: 10;
+      background: transparent;
+      color: rgba(255,255,255,0.3);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    body.eye-page .footer a {
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .eye-sudoku-wrapper {
+        flex-direction: column;
+        padding: 2rem 1.25rem 8rem;
+      }
+
+      .eye-sudoku-right h1 {
+        font-size: 1.8rem;
+      }
+
+      .eye-book-horizontal {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .eye-book-horizontal .book-info {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .pyramid-silhouette {
+        width: min(320px, 80vw);
+      }
+    }
+  </style>
 </head>
-<body>
+
+<body class="eye-page">
+
+  <!-- Starfield canvas -->
+  <canvas id="starfield"></canvas>
+
+  <!-- Pyramid silhouette -->
+  <svg class="pyramid-silhouette" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="pyramidGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0a1628" stop-opacity="0"/>
+        <stop offset="55%" stop-color="#0d1f3c" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#112244" stop-opacity="1"/>
+      </linearGradient>
+      <!-- Subtle edge glow on left face -->
+      <linearGradient id="leftFaceGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#1a3a6e" stop-opacity="0.0"/>
+        <stop offset="100%" stop-color="#1a3a6e" stop-opacity="0.25"/>
+      </linearGradient>
+    </defs>
+    <!-- Ground base -->
+    <rect x="0" y="370" width="600" height="30" fill="#0a1525"/>
+    <!-- Main pyramid body — solid black -->
+    <polygon points="300,20 600,400 0,400" fill="#000"/>
+    <!-- Left face subtle blue rim glow -->
+    <polygon points="300,20 0,400 300,400" fill="url(#leftFaceGrad)"/>
+    <!-- Overall blue atmospheric wash from bottom -->
+    <polygon points="300,20 600,400 0,400" fill="url(#pyramidGrad)" opacity="0.6"/>
+  </svg>
+
   <!-- Navigation -->
-<header class="navbar">
-  <div class="logo">
-    <a href="../index.html">
-      <img src="../assets/logo.svg" alt="TipTipOnui logo" style="height: 40px;">
-    </a>
-  </div>
+  <header class="navbar">
+    <div class="logo">
+      <a href="../index.html">
+        <img src="../assets/logo.svg" alt="TipTipOnui logo" style="height: 40px;">
+      </a>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+      <span></span>
+    </button>
+    <nav class="nav-links" id="nav-menu" aria-label="Main navigation">
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../books.html">Books</a></li>
+        <li><a href="../about.html">About</a></li>
+        <li><a href="../support-me.html">Support Me</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <!-- Hamburger Button (only visible on small screens) -->
-<button class="hamburger" id="hamburger-btn" aria-label="Menu">
-  <span></span>
-</button>
-
-  <!-- Navigation Links -->
-  <nav class="nav-links" id="nav-menu">
-    <ul>
-      <li><a href="../index.html">Home</a></li>
-      <li><a href="../books.html">Books</a></li>
-      <li><a href="../about.html">About</a></li>
-      <li><a href="../support-me.html">Support Me</a></li>
-    </ul>
-  </nav>
-</header>
-<script src="../js/script.js" defer></script>
+  <script src="../js/script.js" defer></script>
 
   <main class="eye-sudoku-wrapper">
     <div class="eye-sudoku-left">
-      <video autoplay muted playsinline src="../assets/eye-of-sudoku.mp4" style="width:100%; height:100%; object-fit:cover;" controls></video>
+      <video autoplay muted playsinline src="../assets/eye-of-sudoku.mp4"
+             style="width:100%; height:100%; object-fit:cover;" controls></video>
     </div>
+
     <div class="eye-sudoku-right">
       <h1>The Eye of Sudoku</h1>
-      <p class="intro-text">A one-of-a-kind puzzle experience unlike anything you’ve seen before.</p>
+      <p class="intro-text">A one-of-a-kind puzzle experience unlike anything you've seen before.</p>
       <p class="desc-text">
-  This book combines logic, storytelling, and spatial reasoning to bring you a true adventure in Sudoku form.
-</p>
-<ul class="eye-bullets">
-  <li>3D Sudoku format – a cube of interconnected puzzles</li>
-  <li>A mysterious narrative woven into the pages</li>
-  <li>A total of 33 cubes to solve</li>
-  <li>Includes a secret code to transmit a signal over eyeofsudoku.com</li>
-</ul>
-	  <div class="eye-book-horizontal">
-  <div class="book-image">
-    <img src="https://images-na.ssl-images-amazon.com/images/P/B0FJMHV1MC.01._SCLZZZZZZZ_.jpg" alt="The Eye of Sudoku Cover" />
-  </div>
-  <div class="book-info">
-    <div class="book-text">
-      <h3>The Eye of Sudoku</h3>
-      <p>Level: Medium</p>
-      <p>Theme: Mystery</p>
-      <p>Paperback</p>
-      <p>Language: 🇺🇸</p>
+        This book combines logic, storytelling, and spatial reasoning to bring you a true adventure in Sudoku form. Not a grid. A cube. Not a puzzle book. A transmission.
+      </p>
+      <ul class="eye-bullets">
+        <li>3D Sudoku format — a cube of interconnected puzzles</li>
+        <li>A mysterious narrative woven into the pages</li>
+        <li>A total of 33 cubes to solve</li>
+        <li>Includes a secret code to transmit a signal over eyeofsudoku.com</li>
+      </ul>
+
+      <div class="eye-book-horizontal">
+        <div class="book-image">
+          <img src="https://images-na.ssl-images-amazon.com/images/P/B0FJMHV1MC.01._SCLZZZZZZZ_.jpg"
+               alt="The Eye of Sudoku – 3D Cube Puzzle Book Cover">
+        </div>
+        <div class="book-info">
+          <div class="book-text">
+            <h3>The Eye of Sudoku</h3>
+            <p>Level: Medium</p>
+            <p>Theme: Mystery</p>
+            <p>Paperback</p>
+            <p>Language: 🇺🇸</p>
+          </div>
+          <div class="book-button">
+            <a href="https://www.amazon.com/dp/B0FJMHV1MC" target="_blank" rel="noopener">View on Amazon</a>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="book-button">
-      <a href="https://www.amazon.com/dp/B0FJMHV1MC" target="_blank">View on Amazon</a>
-    </div>
-  </div>
-</div>
-	</div>
   </main>
 
   <footer class="footer">
-    <p>&copy; 2025 TipTipOnui. Designed in Berlin.</p>
+    <p>&copy; 2025 TipTipOnui. Designed in Berlin. · <a href="../impressum.html">Impressum</a> · <a href="../datenschutz.html">Datenschutz</a></p>
   </footer>
+
+  <!-- ── Starfield script ──────────────────────────────────── -->
+  <script>
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+
+    let stars = [];
+    let W, H;
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function initStars() {
+      stars = [];
+      const count = Math.floor((W * H) / 4000);
+      for (let i = 0; i < count; i++) {
+        const y = Math.random() * H;
+        // Stars are brighter at top, fade as they go lower (sky effect)
+        const maxAlpha = Math.max(0.05, 0.85 * (1 - y / H));
+        stars.push({
+          x: Math.random() * W,
+          y,
+          r: Math.random() * 1.1 + 0.2,
+          alpha: Math.random() * maxAlpha,
+          maxAlpha,
+          speed: Math.random() * 0.004 + 0.002,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function drawBackground() {
+      // Deep space gradient: near-black top → very dark midnight-blue bottom
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0,    '#000005');
+      grad.addColorStop(0.55, '#03080f');
+      grad.addColorStop(0.82, '#06122a');
+      grad.addColorStop(1,    '#0c1e40');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+    }
+
+    let t = 0;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      drawBackground();
+
+      t += 0.008;
+      for (const s of stars) {
+        // Gentle twinkle
+        s.alpha = s.maxAlpha * (0.5 + 0.5 * Math.sin(t / s.speed + s.phase));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(220, 230, 255, ${s.alpha.toFixed(3)})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    resize();
+    initStars();
+    draw();
+    window.addEventListener('resize', () => { resize(); initStars(); });
+  </script>
+
 </body>
 </html>
