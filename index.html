@@ -3,9 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ── Primary SEO ─────────────────────────────────────────── -->
+  <title>TipTipOnui – Unique Puzzle Books & Children's Books on Amazon KDP</title>
+  <meta name="description" content="TipTipOnui designs beautifully crafted puzzle books and children's books available on Amazon KDP — from 3D Sudoku and word searches to story-driven adventures for all ages.">
+  <link rel="canonical" href="https://www.tiptiponui.com/index.html">
+
+  <!-- ── Open Graph (social sharing previews) ───────────────── -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="TipTipOnui – Unique Puzzle Books & Children's Books on Amazon KDP">
+  <meta property="og:description" content="Beautifully designed puzzle books and children's books on Amazon — Sudoku variations, word searches, story-driven adventures and more.">
+  <meta property="og:url" content="https://www.tiptiponui.com/">
+  <meta property="og:image" content="https://www.tiptiponui.com/assets/og-image.jpg">
+  <!-- Tip: create a 1200×630px og-image.jpg with your logo + a few book covers -->
+
+  <!-- ── Twitter / X card ───────────────────────────────────── -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TipTipOnui – Unique Puzzle Books on Amazon">
+  <meta name="twitter:description" content="Puzzle books, children's books and story adventures — beautifully designed and available on Amazon KDP.">
+  <meta name="twitter:image" content="https://www.tiptiponui.com/assets/og-image.jpg">
+
+  <!-- ── Favicon ────────────────────────────────────────────── -->
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <title>TipTipOnui – Puzzles & Books</title>
+
+  <!-- ── Stylesheet ─────────────────────────────────────────── -->
   <link rel="stylesheet" href="assets/style.css">
+
+  <!-- ── Structured Data: WebSite + Books (JSON-LD) ─────────── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://www.tiptiponui.com/#website",
+        "url": "https://www.tiptiponui.com/",
+        "name": "TipTipOnui",
+        "description": "Unique puzzle books and children's books on Amazon KDP — Sudoku, word searches, and story-driven adventures.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "TipTipOnui",
+          "url": "https://www.tiptiponui.com/"
+        }
+      },
+      {
+        "@type": "Book",
+        "name": "Sudokaji – The Eye of Sudoku 3D Puzzles",
+        "url": "https://www.amazon.com/dp/B0FJMHV1MC",
+        "image": "https://images-na.ssl-images-amazon.com/images/P/B0FJMHV1MC.01._SCLZZZZZZZ_.jpg",
+        "author": { "@type": "Organization", "name": "TipTipOnui" },
+        "publisher": { "@type": "Organization", "name": "TipTipOnui" },
+        "bookFormat": "https://schema.org/Paperback",
+        "inLanguage": "en",
+        "genre": "Puzzle Books",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.amazon.com/dp/B0FJMHV1MC",
+          "availability": "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Amazon KDP" }
+        }
+      },
+      {
+        "@type": "Book",
+        "name": "Sudokaji – Catitude (Easy, Medium, Hard)",
+        "url": "https://www.amazon.com/dp/B0FG6X8Y6F",
+        "image": "https://images-na.ssl-images-amazon.com/images/P/B0FG6X8Y6F.01._SCLZZZZZZZ_.jpg",
+        "author": { "@type": "Organization", "name": "TipTipOnui" },
+        "publisher": { "@type": "Organization", "name": "TipTipOnui" },
+        "bookFormat": "https://schema.org/Paperback",
+        "inLanguage": "en",
+        "genre": "Puzzle Books",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.amazon.com/dp/B0FG6X8Y6F",
+          "availability": "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Amazon KDP" }
+        }
+      },
+      {
+        "@type": "Book",
+        "name": "Sudoku for Kids – Heroes Edition",
+        "url": "https://www.amazon.com/dp/B0FHPFZ4HZ",
+        "image": "https://images-na.ssl-images-amazon.com/images/P/B0FHPFZ4HZ.01._SCLZZZZZZZ_.jpg",
+        "author": { "@type": "Organization", "name": "TipTipOnui" },
+        "publisher": { "@type": "Organization", "name": "TipTipOnui" },
+        "bookFormat": "https://schema.org/Paperback",
+        "inLanguage": "en",
+        "genre": "Children's Puzzle Books",
+        "audience": {
+          "@type": "EducationalAudience",
+          "educationalRole": "student",
+          "suggestedMinAge": 6,
+          "suggestedMaxAge": 12
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.amazon.com/dp/B0FHPFZ4HZ",
+          "availability": "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Amazon KDP" }
+        }
+      },
+      {
+        "@type": "Book",
+        "name": "River and Mr. Banjo (English Edition)",
+        "url": "https://www.amazon.com/dp/B0FGDQJH68",
+        "image": "https://images-na.ssl-images-amazon.com/images/P/B0FGDQJH68.01._SCLZZZZZZZ_.jpg",
+        "author": { "@type": "Organization", "name": "TipTipOnui" },
+        "publisher": { "@type": "Organization", "name": "TipTipOnui" },
+        "bookFormat": "https://schema.org/Paperback",
+        "inLanguage": "en",
+        "genre": "Children's Books",
+        "offers": {
+          "@type": "Offer",
+          "url": "https://www.amazon.com/dp/B0FGDQJH68",
+          "availability": "https://schema.org/InStock",
+          "seller": { "@type": "Organization", "name": "Amazon KDP" }
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
@@ -16,14 +133,10 @@
       <img src="assets/logo.svg" alt="TipTipOnui logo" style="height: 40px;">
     </a>
   </div>
-
-  <!-- Hamburger Button (only visible on small screens) -->
-<button class="hamburger" id="hamburger-btn" aria-label="Menu">
-  <span></span>
-</button>
-
-  <!-- Navigation Links -->
-  <nav class="nav-links" id="nav-menu">
+  <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+    <span></span>
+  </button>
+  <nav class="nav-links" id="nav-menu" aria-label="Main navigation">
     <ul>
       <li><a href="index.html">Home</a></li>
       <li><a href="books.html">Books</a></li>
@@ -32,76 +145,92 @@
     </ul>
   </nav>
 </header>
+
 <script src="js/script.js" defer></script>
-  <div class="special-banner">
+
+<div class="special-banner">
   <a href="puzzles/eye-of-sudoku.html">🧠 Discover the Eye of Sudoku – Our Most Mysterious Puzzle Book Yet</a>
 </div>
+
+<main>
+
   <div class="video-hero">
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="assets/intro.mp4" type="video/mp4">
-    Your browser does not support HTML5 video.
-  </video>
-  <div class="hero-text">
-  <div class="hero-text-inner">
-    <h1>Discover Unique Puzzle Books</h1>
-    <p>Beautifully designed. Carefully crafted. From classic Sudoku to playful word searches and story-driven adventures.</p>
+    <video autoplay muted loop playsinline id="bg-video">
+      <source src="assets/intro.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+    <div class="hero-text">
+      <div class="hero-text-inner">
+        <h1>Discover Unique Puzzle Books</h1>
+        <p>Beautifully designed. Carefully crafted. From classic Sudoku variations and word searches to story-driven children's books and brain training adventures — all available on Amazon.</p>
+      </div>
+    </div>
   </div>
-  </div>
-</div>
 
-<section class="featured">
-  <h2>Featured Books</h2>
-  <div class="book-grid">
-    <div class="book">
-      <img src="https://images-na.ssl-images-amazon.com/images/P/B0FJMHV1MC.01._SCLZZZZZZZ_.jpg" alt="Sudokaji – The Eye of Sudoku Cover">
-      <h3>Sudokaji – The Eye of Sudoku 3D Puzzles</h3>
-      <p>🐪🐪🐪🐪🐪</p>
-      <a href="https://www.amazon.com/dp/B0FJMHV1MC" target="_blank">View on Amazon</a>
-      <blockquote class="review">You may think it's a puzzle book. You'll be tracking signals from Saturn.<br>🧊</blockquote>
-    </div>
-    <div class="book">
-      <img src="https://images-na.ssl-images-amazon.com/images/P/B0FG6X8Y6F.01._SCLZZZZZZZ_.jpg" alt="Sudokaji – Catitude (Easy, Medium, Hard) Cover">
-      <h3>Sudokaji – Catitude <br>(Easy, Medium, Hard)</h3>
-      <p>🐪🐪🐪🐪🐪</p>
-      <a href="https://www.amazon.com/dp/B0FG6X8Y6F" target="_blank">View on Amazon</a>
-      <blockquote class="review">The cats will be judging your logic... Weirdly inspiring, with attitude.<br>🐈</blockquote>
-    </div>
-    <div class="book">
-      <img src="https://images-na.ssl-images-amazon.com/images/P/B0FHPFZ4HZ.01._SCLZZZZZZZ_.jpg" alt="Sudoku for Kids – Heroes Edition Cover">
-      <h3>Sudoku for Kids<br>Heroes Edition</h3>
-      <p>🐪🐪🐪🐪🐪</p>
-      <a href="https://www.amazon.com/dp/B0FHPFZ4HZ" target="_blank">View on Amazon</a>
-      <blockquote class="review">Your kid will learn to solve sudokus faster than you load the dishwasher.<br>🦸</blockquote>
-    </div>
-    <div class="book">
-      <img src="https://images-na.ssl-images-amazon.com/images/P/B0FGDQJH68.01._SCLZZZZZZZ_.jpg" alt="River and Mr. Banjo (English Edition) Cover">
-      <h3>River and Mr. Banjo<br>(English Edition)</h3>
-      <p>🐪🐪🐪🐪🐪</p>
-      <a href="https://www.amazon.com/dp/B0FGDQJH68" target="_blank">View on Amazon</a>
-      <blockquote class="review">A cat will guide you into a cave only to introduce you to 100 more cats.<br>🐻</blockquote>
-    </div>
-  </div>
-</section>
+  <section class="featured" aria-labelledby="featured-heading">
+    <h2 id="featured-heading">Featured Books</h2>
+    <div class="book-grid">
 
-<section class="dtp-banner">
-  <div class="dtp-banner-inner">
-    <div class="dtp-label">For KDP authors</div>
-    <h2 class="dtp-headline">Your book.<br><span>Perfectly laid out.</span></h2>
-    <p class="dtp-body">
-      Professional book formatting for Amazon KDP —<br>
-      interiors, covers, print-ready files.<br>
-      Made for self-publishers who want their work<br>
-      to look like it came from a real publisher.
-    </p>
-    <a class="dtp-cta" href="https://dtp-services.de" target="_blank" rel="noopener">
-      Book your layout → dtp-services.de
-    </a>
-    <p class="dtp-sub">Berlin-based · fast turnaround · print &amp; ebook</p>
-  </div>
-</section>
+      <article class="book">
+        <img src="https://images-na.ssl-images-amazon.com/images/P/B0FJMHV1MC.01._SCLZZZZZZZ_.jpg" alt="Sudokaji – The Eye of Sudoku 3D Puzzle Book Cover">
+        <h3>Sudokaji – The Eye of Sudoku 3D Puzzles</h3>
+        <p>🐪🐪🐪🐪🐪</p>
+        <a href="https://www.amazon.com/dp/B0FJMHV1MC" target="_blank" rel="noopener">View on Amazon</a>
+        <blockquote class="review">You may think it's a puzzle book. You'll be tracking signals from Saturn.<br>🧊</blockquote>
+      </article>
 
-  <footer class="footer">
-    <p>Designed in Berlin, 2025 · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></p>
-  </footer>
+      <article class="book">
+        <img src="https://images-na.ssl-images-amazon.com/images/P/B0FG6X8Y6F.01._SCLZZZZZZZ_.jpg" alt="Sudokaji – Catitude Sudoku Book (Easy, Medium, Hard) Cover">
+        <h3>Sudokaji – Catitude<br>(Easy, Medium, Hard)</h3>
+        <p>🐪🐪🐪🐪🐪</p>
+        <a href="https://www.amazon.com/dp/B0FG6X8Y6F" target="_blank" rel="noopener">View on Amazon</a>
+        <blockquote class="review">The cats will be judging your logic... Weirdly inspiring, with attitude.<br>🐈</blockquote>
+      </article>
+
+      <article class="book">
+        <img src="https://images-na.ssl-images-amazon.com/images/P/B0FHPFZ4HZ.01._SCLZZZZZZZ_.jpg" alt="Sudoku for Kids – Heroes Edition Puzzle Book Cover">
+        <h3>Sudoku for Kids<br>Heroes Edition</h3>
+        <p>🐪🐪🐪🐪🐪</p>
+        <a href="https://www.amazon.com/dp/B0FHPFZ4HZ" target="_blank" rel="noopener">View on Amazon</a>
+        <blockquote class="review">Your kid will learn to solve sudokus faster than you load the dishwasher.<br>🦸</blockquote>
+      </article>
+
+      <article class="book">
+        <img src="https://images-na.ssl-images-amazon.com/images/P/B0FGDQJH68.01._SCLZZZZZZZ_.jpg" alt="River and Mr. Banjo Children's Book (English Edition) Cover">
+        <h3>River and Mr. Banjo<br>(English Edition)</h3>
+        <p>🐪🐪🐪🐪🐪</p>
+        <a href="https://www.amazon.com/dp/B0FGDQJH68" target="_blank" rel="noopener">View on Amazon</a>
+        <blockquote class="review">A cat will guide you into a cave only to introduce you to 100 more cats.<br>🐻</blockquote>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── DTP Services Promo Banner ──────────────────────────────
+       CSS goes into your style.css (see dtp-banner.css)
+  ──────────────────────────────────────────────────────────── -->
+  <section class="dtp-banner" aria-label="Sponsored: Professional KDP book formatting">
+    <div class="dtp-banner-inner">
+      <div class="dtp-label">For KDP authors</div>
+      <h2 class="dtp-headline">Your book.<br><span>Perfectly laid out.</span></h2>
+      <p class="dtp-body">
+        Professional book formatting for Amazon KDP —<br>
+        interiors, covers, print-ready files.<br>
+        Made for self-publishers who want their work<br>
+        to look like it came from a real publisher.
+      </p>
+      <a class="dtp-cta" href="https://www.dtp-services.de" target="_blank" rel="noopener sponsored">
+        Book your layout → dtp-services.de
+      </a>
+      <p class="dtp-sub">Berlin-based · fast turnaround · print &amp; ebook</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>Designed in Berlin, 2025 · <a href="impressum.html">Impressum</a> · <a href="datenschutz.html">Datenschutz</a></p>
+</footer>
+
 </body>
 </html>
