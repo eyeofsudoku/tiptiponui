@@ -744,3 +744,106 @@ body {
 .about-text h1 {
   line-height: 1.0; /* or try 1.1 for even tighter spacing */
 }
+
+@keyframes dtp-gradshift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes dtp-fadein {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.dtp-banner {
+  background: linear-gradient(135deg, #1a2a4a, #2d1b4e, #1a3a4a, #3d2200, #1a2a4a);
+  background-size: 300% 300%;
+  animation: dtp-gradshift 8s ease infinite;
+  padding: 3.5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+}
+
+.dtp-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 60% 40%, rgba(255, 180, 60, 0.09) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.dtp-banner-inner {
+  max-width: 620px;
+  margin: 0 auto;
+  position: relative;
+  animation: dtp-fadein 0.9s ease both;
+}
+
+.dtp-label {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #f5c26b;
+  border: 1px solid rgba(245, 194, 107, 0.45);
+  border-radius: 20px;
+  padding: 4px 16px;
+  margin-bottom: 1.3rem;
+}
+
+.dtp-headline {
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 0.8rem;
+  line-height: 1.2;
+}
+
+.dtp-headline span {
+  color: #f5c26b;
+}
+
+.dtp-body {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 1.8rem;
+}
+
+.dtp-cta {
+  display: inline-block;
+  background: #f5c26b;
+  color: #1a1200;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 13px 30px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.dtp-cta:hover {
+  background: #ffd080;
+  transform: scale(1.04);
+}
+
+.dtp-sub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+  margin-top: 1.1rem;
+}
+
+@media (max-width: 520px) {
+  .dtp-banner {
+    padding: 2.5rem 1.3rem;
+  }
+  .dtp-cta {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+}
